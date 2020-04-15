@@ -76,5 +76,5 @@ def main():
 
     fadida = player(player_id(), player_name(), player_nationality())
     fadida.calculate_age(player_birthdate())
-
+blah blahfh;lkfghfkhfkh
 main()
