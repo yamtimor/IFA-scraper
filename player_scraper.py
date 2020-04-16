@@ -23,12 +23,12 @@ soup = bs4.BeautifulSoup(res.text,'html.parser')
 def player_id():
     """this function generate a random id for every player"""
     id = uuid.uuid4()
-    print(id)
+    return id
 
 def player_name():
     soup_name = soup.findAll("h1", {"class":"new-player-card_title"})
     name = str(soup_name)[35:-6]
-    print(name)
+    return name
 
 def player_birthdate():
     # scrape and cleansing the dates
@@ -52,15 +52,20 @@ def player_nationality():
     soup_nationality = str(soup_nationality).split("<li>")[2]
     soup_nationality = soup_nationality.split("<")[2]
     soup_nationality = soup_nationality.split(">")[1]
-    print(soup_nationality)
+    return soup_nationality
+
+def player_current_team():
+    soup_team = soup.findAll("h2", {"class":"new-player-data_title js-container-title"})
+    soup_team = str(soup_team).split("<span>")[1].split("\n")[1]
+    return soup_team
 
 class player:
 
-    def __init__(self, id, name, nationality):
+    def __init__(self, id, name, nationality, current_team):
         self.id = id
         self.name = name
         self.nationality = nationality
-        # self.current_team = current_team
+        self.current_team = current_team
         # self.goals_current_season = goals_current_season
         # self.yellow_cards_current_season = yellow_cards_current_season
 
@@ -69,12 +74,22 @@ class player:
         today = dt.date.today()
         # return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
         self.age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
-        print(self.age)
+        return self.age
         # print(self.age)
 
 def main():
 
-    fadida = player(player_id(), player_name(), player_nationality())
+    fadida = player(player_id(), player_name(), player_nationality(),player_current_team())
     fadida.calculate_age(player_birthdate())
-blah blahfh;lkfghfkhfkh
+
+    data = {
+    'id': [fadida.id],
+    'name': [fadida.name],
+    'nationality': [fadida.nationality],
+    'current_team': [fadida.current_team],
+    'age': [fadida.calculate_age(player_birthdate())]
+    }
+    df = pd.DataFrame(data, columns = ['id','name','nationality','current_team','age'])
+    df.to_excel("my_scout_result.xlsx")
+    
 main()
