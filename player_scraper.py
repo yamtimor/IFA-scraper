@@ -15,7 +15,8 @@ import re
 import uuid
 
 # the scraping details
-res = requests.get("https://www.football.org.il/en/players/player/?player_id=23391&season_id=21")
+url = "https://www.football.org.il/en/players/player/?player_id=23391&season_id=21"
+res = requests.get(url)
 soup = bs4.BeautifulSoup(res.text,'html.parser')
 
 #static data scrape
@@ -79,17 +80,17 @@ class player:
 
 def main():
 
-    fadida = player(player_id(), player_name(), player_nationality(),player_current_team())
-    fadida.calculate_age(player_birthdate())
+    player = player(player_id(), player_name(), player_nationality(),player_current_team())
+    player.calculate_age(player_birthdate())
 
     data = {
-    'id': [fadida.id],
-    'name': [fadida.name],
-    'nationality': [fadida.nationality],
-    'current_team': [fadida.current_team],
-    'age': [fadida.calculate_age(player_birthdate())]
+    'id': [player.id],
+    'name': [player.name],
+    'nationality': [player.nationality],
+    'current_team': [player.current_team],
+    'age': [player.calculate_age(player_birthdate())]
     }
     df = pd.DataFrame(data, columns = ['id','name','nationality','current_team','age'])
     df.to_excel("my_scout_result.xlsx")
-    
+
 main()
